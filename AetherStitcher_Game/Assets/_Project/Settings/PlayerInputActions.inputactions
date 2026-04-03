@@ -1,9 +1,9 @@
 {
     "version": 1,
-    "name": "PlayerControls",
+    "name": "PlayerInputActions",
     "maps": [
         {
-            "name": "Player",
+            "name": "Gameplay",
             "id": "5db73d8a-902b-46b1-89d3-4abe6c162751",
             "actions": [
                 {
