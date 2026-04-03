@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 1185898246}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -286,7 +286,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.9}
   m_EdgeRadius: 0
 --- !u!1 &1715772670
 GameObject:
@@ -344,8 +344,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.671875, y: 1}
+  m_Offset: {x: -0.04994692, y: 0.025258541}
+  m_Size: {x: 1.0548246, y: 2.0608578}
   m_Direction: 0
 --- !u!114 &1715772672
 MonoBehaviour:
@@ -367,7 +367,6 @@ MonoBehaviour:
   jumpCutMultiplier: 0.5
   fallMultiplier: 3
   maxAirJump: 1
-  IsJumping: 0
   groundCheck: {fileID: 1185898247}
   groundCheckSize: {x: 0.9, y: 0.1}
   groundLayer:
