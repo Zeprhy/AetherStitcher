@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 15f;
     [SerializeField] private float jumpCutMultiplier = 0.5f; // Untuk variable height jump
     [SerializeField] private float fallMultiplier = 2.5f; // Gravity lebih kuat saat jatuh (feel better)
-    [SerializeField] private float maxJumpCount = 2; // 1 = jump, 2 = double jump
+    [SerializeField] private int maxAirJump = 1;
+    [SerializeField] private bool isCurrentlyTakingOff;
     
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     // Cached Components (OPTIMIZE: caching untuk avoid GetComponent tiap frame)
     private Rigidbody2D rb;
     private Collider2D col;
+    private Animator animator;
     
     // Input Variables
     private Vector2 moveInput;
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour
         // OPTIMIZE: Cache component references di Awake (lebih cepat dari Start)
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
         
         // Setup Rigidbody untuk platformer feel yang optimal
         rb.gravityScale = 3f; // Gravity yang lebih kuat = jump terasa lebih snappy
@@ -72,6 +75,8 @@ public class PlayerController : MonoBehaviour
         
         // Handle coyote time & jump buffer timers
         UpdateTimers();
+
+        UpdateAnimatorParameters();
     }
 
     private void FixedUpdate()
@@ -154,8 +159,10 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
+        isCurrentlyTakingOff = false;
+
         // Cek apakah bisa jump
-        bool canJump = (isGrounded || coyoteTimeCounter > 0f || jumpCount < maxJumpCount) 
+        bool canJump = (isGrounded || coyoteTimeCounter > 0f || jumpCount < maxAirJump) 
                        && (jumpPressed || jumpBufferCounter > 0f);
 
         if (canJump)
@@ -165,6 +172,13 @@ public class PlayerController : MonoBehaviour
             
             // Apply jump force
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+            if (!isCurrentlyTakingOff)
+            {
+               animator.SetTrigger("Jump");
+               isCurrentlyTakingOff = true;
+            }
+            
             
             // Increment jump count jika di udara (double jump)
             if (!isGrounded && coyoteTimeCounter <= 0f)
@@ -176,6 +190,7 @@ public class PlayerController : MonoBehaviour
             jumpPressed = false;
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
+
             
             // JUICE TIP: Trigger particle effect atau SFX di sini
             // OnJumpPerformed?.Invoke();
@@ -221,6 +236,7 @@ public class PlayerController : MonoBehaviour
         {
             jumpCount = 0;
             lastGroundedTime = Time.time;
+            isCurrentlyTakingOff = false;
             // JUICE TIP: Trigger landing particle/SFX di sini
         }
 
@@ -246,6 +262,15 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    #region Animator Parameter
+    private void UpdateAnimatorParameters()
+    {
+        animator.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
+        bool isCurrentFalling = rb.linearVelocity.y < -0.1f;
+        animator.SetBool("IsFalling", isCurrentFalling);
+    }
+    #endregion 
 
     #region Debug & Gizmos
 
